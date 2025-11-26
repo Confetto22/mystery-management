@@ -44,16 +44,27 @@ export const analyticsService = async () => {
     prisma.department.findMany({
       include: {
         _count: { select: { members: true } },
+        members: {
+          where: {
+            isHead: true,
+          },
+          select: {
+            isHead: true,
+            firstname: true,
+            lastname: true,
+            phone: true,
+          },
+        },
       },
     }),
   ]);
-  const presentPhones = presentToday.map((a) => a.member_phone).filter(Boolean);
-  const absentToday = await prisma.member.findMany({
-    where: {
-      memberType: "regular",
-      phone: { notIn: presentPhones },
-    },
-  });
+  // const presentPhones = presentToday.map((a) => a.member_phone).filter(Boolean);
+  // const absentToday = await prisma.member.findMany({
+  //   where: {
+  //     memberType: "regular",
+  //     phone: { notIn: presentPhones },
+  //   },
+  // });
   return {
     totalMembers,
     firstTimers,
@@ -61,6 +72,6 @@ export const analyticsService = async () => {
     presentToday,
     genders,
     deptPopulation,
-    absentToday,
+    // absentToday,
   };
 };

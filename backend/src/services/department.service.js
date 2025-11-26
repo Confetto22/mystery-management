@@ -21,7 +21,17 @@ export const addDepartmentService = async (deptData) => {
 export const allDepartmentService = async () => {
   const departments = await prisma.department.findMany({
     include: {
-      members: true,
+      members: {
+        where: {
+          isHead: true,
+        },
+        select: {
+          isHead: true,
+          firstname: true,
+          lastname: true,
+          phone: true,
+        },
+      },
     },
   });
   return { message: "All departments", data: departments };

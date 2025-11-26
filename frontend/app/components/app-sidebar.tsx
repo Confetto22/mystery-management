@@ -1,15 +1,12 @@
 import {
-  Calendar,
-  CalendarCog,
-  Home,
-  Inbox,
+  Briefcase,
+  ShoppingBag,
+  FileText,
+  Users,
   LayoutDashboard,
-  List,
-  NotebookTabs,
-  Search,
+  UserCheck,
+  ClipboardCheck,
   Settings,
-  UserPen,
-  UserPlus,
 } from "lucide-react";
 import {
   Sidebar,
@@ -27,81 +24,107 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
-import { Link } from "react-router";
-import { useRef, useState } from "react";
+import { Link, useLocation } from "react-router";
+import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export function AppSidebar() {
-  const [selectedItem, setSelectedItem] = useState("dashboard");
+  // const [selectedItem, setSelectedItem] = useState("");
+  const pathname = useLocation().pathname;
+  // const [pagesOpen, setPagesOpen] = useState(false);
+
   const navItems = [
     {
-      title: "Overview",
-      group: [
-        { ref: "dashboard", refLink: "/dashboard", icon: LayoutDashboard },
-      ],
+      title: "Dashboard",
+      icon: LayoutDashboard,
+      refLink: "/dashboard",
     },
     {
-      title: "Membership",
-      group: [
-        { ref: "Directory", refLink: "#", icon: List },
-        { ref: "Add Member", refLink: "#", icon: UserPlus },
-      ],
+      title: "Members",
+      icon: Users,
+      refLink: "/members",
+    },
+    {
+      title: "Ministry",
+      icon: ShoppingBag,
+      refLink: "/departments",
+    },
+    {
+      title: "Events",
+      icon: FileText,
+      refLink: "/events",
     },
     {
       title: "Attendance",
-      group: [
-        { ref: "All Records", refLink: "#", icon: NotebookTabs },
-        { ref: "Record Attendance", refLink: "#", icon: UserPen },
-        { ref: "Services & Events", refLink: "#", icon: CalendarCog },
-      ],
+      icon: UserCheck,
+      refLink: "/attendance",
     },
-    // {
-    //   title: "System",
-    //   group: [{ ref: "Settings", refLink: "#", icon: Settings }],
-    // },
+    {
+      title: "Record Attendance",
+      icon: ClipboardCheck,
+      refLink: "/attendance/record",
+    },
+    {
+      title: "Settings",
+      icon: Settings,
+      refLink: "/settings",
+    },
   ];
-
   return (
-    <Sidebar className="">
-      <SidebarHeader className="py-8">
-        <img
-          src="https://res.cloudinary.com/dv9aqxptd/image/upload/v1762542048/homchapel/TESLA_mueunu.svg"
-          alt="mystery embassy"
-          className="max-w-[150px] mx-auto"
-        />
+    <Sidebar className="border-r">
+      <SidebarHeader className="py-6 px-4">
+        <div className="flex items-center gap-2">
+          <div className="h-8 w-8 rounded-lg bg-green-500 flex items-center justify-center">
+            <span className="text-white font-bold text-lg">D</span>
+          </div>
+          <span className="font-semibold text-lg">Dasher</span>
+        </div>
       </SidebarHeader>
-      <SidebarContent className="">
-        {navItems.map((singleItem) => (
-          <SidebarGroup key={singleItem.title}>
-            <SidebarGroupLabel className="uppercase text-[.7rem] text-gray-400">
-              {singleItem.title}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              {singleItem.group.map((item) => (
-                <SidebarMenuItem
-                  key={item.ref}
-                  className=""
-                  onClick={() => setSelectedItem(item.ref)}
-                >
+      <SidebarContent className="px-2">
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
                     asChild
-                    className={`rounded-lg px-2 ${selectedItem === item.ref ? "bg-(--main-blue) text-white " : ""}`}
+                    className={`w-full justify-start ${
+                      pathname === item.refLink
+                        ? "bg-green-500 text-white hover:bg-green-600"
+                        : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => pathname === item.refLink}
                   >
                     <Link to={item.refLink}>
-                      <item.icon />
-                      <span>{item.ref}</span>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
-        {/* <SidebarGroup>
-          <SidebarGroupContent>
-            
+            </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup> */}
+        </SidebarGroup>
       </SidebarContent>
+
+      {/* User Profile at Bottom */}
+      <div className="mt-auto p-4 border-t">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-10 w-10">
+            <AvatarFallback className="bg-gray-200 text-gray-700">
+              JC
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-medium text-gray-900 truncate">
+              Jitu Chauhan
+            </div>
+            <div className="text-xs text-gray-500 truncate">
+              Free Version - 1 Month
+            </div>
+          </div>
+        </div>
+      </div>
     </Sidebar>
   );
 }
